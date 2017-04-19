@@ -2,6 +2,7 @@
 
 namespace BlogBundle\Controller;
 
+use BlogBundle\Entity\Article;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,13 +14,30 @@ class IndexController extends Controller
      */
     public function indexAction()
     {
-        $number = mt_rand(1, 100);
-
-        return $this->render('BlogBundle:Default:index.html.twig', [
-            'number' => $number
-        ]);
+        /*$article = new Article();
+        $article
+            ->setAuthor('marc')
+            ->setContent('Lorem ipsum')
+            ->setTitle('First article')
+            ->setPublished(false);
+        */
+        $em = $this->getDoctrine()->getManager()->getRepository('BlogBundle:Article');
+        $articleList = $em->find(1);
+        dump($articleList);
+        return $this->render('BlogBundle:Default:index.html.twig');
     }
 
+    /**
+     * @Route(
+     *     "/article/{page}",
+     *     name="article_list",
+     *     defaults={"page": 1},
+     *     requirements={"page": "\d+"})
+     */
+    public function listAction($page)
+    {
+        return new Response("Page n° {$page}");
+    }
     /**
      * @Route("/article/{slug}", name="article_page", requirements={"slug": "^[A-z]+$"})
      */
